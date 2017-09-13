@@ -28,6 +28,7 @@ import com.androidnetworking.common.ResponseType;
 import com.google.gson.internal.$Gson$Types;
 import com.google.gson.reflect.TypeToken;
 
+import io.reactivex.Single;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -57,7 +58,7 @@ public class Rx2ANRequest extends ANRequest<Rx2ANRequest> {
         super(builder);
     }
 
-    public Observable<JSONObject> getJSONObjectObservable() {
+    public Single<JSONObject> getJSONObjectObservable() {
         this.setResponseAs(ResponseType.JSON_OBJECT);
         if (this.getRequestType() == RequestType.SIMPLE) {
             return Rx2InternalNetworking.generateSimpleObservable(this);
@@ -68,7 +69,7 @@ public class Rx2ANRequest extends ANRequest<Rx2ANRequest> {
         }
     }
 
-    public Observable<JSONArray> getJSONArrayObservable() {
+    public Single<JSONArray> getJSONArrayObservable() {
         this.setResponseAs(ResponseType.JSON_ARRAY);
         if (this.getRequestType() == RequestType.SIMPLE) {
             return Rx2InternalNetworking.generateSimpleObservable(this);
@@ -79,7 +80,7 @@ public class Rx2ANRequest extends ANRequest<Rx2ANRequest> {
         }
     }
 
-    public Observable<Bitmap> getBitmapObservable() {
+    public Single<Bitmap> getBitmapObservable() {
         this.setResponseAs(ResponseType.BITMAP);
         if (this.getRequestType() == RequestType.SIMPLE) {
             return Rx2InternalNetworking.generateSimpleObservable(this);
@@ -90,7 +91,7 @@ public class Rx2ANRequest extends ANRequest<Rx2ANRequest> {
         }
     }
 
-    public Observable<String> getStringObservable() {
+    public Single<String> getStringObservable() {
         this.setResponseAs(ResponseType.STRING);
         if (this.getRequestType() == RequestType.SIMPLE) {
             return Rx2InternalNetworking.generateSimpleObservable(this);
@@ -105,7 +106,7 @@ public class Rx2ANRequest extends ANRequest<Rx2ANRequest> {
         return Rx2InternalNetworking.generateDownloadObservable(this);
     }
 
-    public <T> Observable<T> getParseObservable(TypeToken<T> typeToken) {
+    public <T> Single<T> getParseObservable(TypeToken<T> typeToken) {
         this.setType(typeToken.getType());
         this.setResponseAs(ResponseType.PARSED);
         if (this.getRequestType() == RequestType.SIMPLE) {
@@ -117,7 +118,7 @@ public class Rx2ANRequest extends ANRequest<Rx2ANRequest> {
         }
     }
 
-    public <T> Observable<T> getObjectObservable(Class<T> objectClass) {
+    public <T> Single<T> getObjectObservable(Class<T> objectClass) {
         this.setType(objectClass);
         this.setResponseAs(ResponseType.PARSED);
         if (this.getRequestType() == RequestType.SIMPLE) {
@@ -129,7 +130,7 @@ public class Rx2ANRequest extends ANRequest<Rx2ANRequest> {
         }
     }
 
-    public <T> Observable<List<T>> getObjectListObservable(Class<T> objectClass) {
+    public <T> Single<List<T>> getObjectListObservable(Class<T> objectClass) {
         this.setType($Gson$Types.newParameterizedTypeWithOwner(null, List.class, objectClass));
         this.setResponseAs(ResponseType.PARSED);
         if (this.getRequestType() == RequestType.SIMPLE) {

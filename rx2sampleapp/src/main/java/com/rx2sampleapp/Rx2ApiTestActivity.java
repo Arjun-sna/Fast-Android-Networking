@@ -36,6 +36,8 @@ import com.rx2androidnetworking.Rx2AndroidNetworking;
 import com.rx2sampleapp.model.User;
 import com.rx2sampleapp.utils.Utils;
 
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,15 +80,10 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                 .getObjectListObservable(User.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<User>>() {
+                .subscribe(new SingleObserver<List<User>>() {
                     @Override
                     public void onError(Throwable e) {
                         Utils.logError(TAG, e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : getAllUsers completed");
                     }
 
                     @Override
@@ -95,7 +92,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(List<User> users) {
+                    public void onSuccess(List<User> users) {
                         Log.d(TAG, "onResponse isMainThread : " + String.valueOf(Looper.myLooper() == Looper.getMainLooper()));
                         Log.d(TAG, "userList size : " + users.size());
                         for (User user : users) {
@@ -124,12 +121,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                 .getObjectObservable(User.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : getAnUser completed");
-                    }
-
+                .subscribe(new SingleObserver<User>() {
                     @Override
                     public void onError(Throwable e) {
                         Utils.logError(TAG, e);
@@ -141,7 +133,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(User user) {
+                    public void onSuccess(User user) {
                         Log.d(TAG, "onResponse isMainThread : " + String.valueOf(Looper.myLooper() == Looper.getMainLooper()));
                         Log.d(TAG, "id : " + user.id);
                         Log.d(TAG, "firstname : " + user.firstname);
@@ -168,7 +160,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                 .getJSONObjectObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
+                .subscribe(new SingleObserver<JSONObject>() {
 
                     @Override
                     public void onError(Throwable e) {
@@ -192,17 +184,12 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : checkForHeaderGet completed");
-                    }
-
-                    @Override
                     public void onSubscribe(Disposable d) {
                         Log.d(TAG, "onSubscribe Detail - isDisposed : " + d.isDisposed());
                     }
 
                     @Override
-                    public void onNext(JSONObject response) {
+                    public void onSuccess(JSONObject response) {
                         Log.d(TAG, "onResponse object : " + response.toString());
                         Log.d(TAG, "onResponse isMainThread : " + String.valueOf(Looper.myLooper() == Looper.getMainLooper()));
                     }
@@ -231,12 +218,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
         rxAnRequest.getJSONObjectObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : checkForHeaderPost completed");
-                    }
-
+                .subscribe(new SingleObserver<JSONObject>() {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof ANError) {
@@ -264,7 +246,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(JSONObject response) {
+                    public void onSuccess(JSONObject response) {
                         Log.d(TAG, "onResponse object : " + response.toString());
                         Log.d(TAG, "onResponse isMainThread : " + String.valueOf(Looper.myLooper() == Looper.getMainLooper()));
                     }
@@ -288,12 +270,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                 .getJSONObjectObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : createAnUser completed");
-                    }
-
+                .subscribe(new SingleObserver<JSONObject>() {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof ANError) {
@@ -321,7 +298,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(JSONObject response) {
+                    public void onSuccess(JSONObject response) {
                         Log.d(TAG, "onResponse object : " + response.toString());
                         Log.d(TAG, "onResponse isMainThread : " + String.valueOf(Looper.myLooper() == Looper.getMainLooper()));
                     }
@@ -351,12 +328,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                 .getJSONObjectObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : createAnUserJSONObject completed");
-                    }
-
+                .subscribe(new SingleObserver<JSONObject>() {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof ANError) {
@@ -384,7 +356,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(JSONObject response) {
+                    public void onSuccess(JSONObject response) {
                         Log.d(TAG, "onResponse object : " + response.toString());
                         Log.d(TAG, "onResponse isMainThread : " + String.valueOf(Looper.myLooper() == Looper.getMainLooper()));
                     }
@@ -511,7 +483,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
     }
 
     public void uploadImage(final View view) {
-        Observable<JSONObject> observable = Rx2AndroidNetworking.upload(ApiEndPoint.BASE_URL + ApiEndPoint.UPLOAD_IMAGE)
+        Single<JSONObject> observable = Rx2AndroidNetworking.upload(ApiEndPoint.BASE_URL + ApiEndPoint.UPLOAD_IMAGE)
                 .addMultipartFile("image", new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "test.png"))
                 .build()
                 .setAnalyticsListener(new AnalyticsListener() {
@@ -534,12 +506,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
 
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG + "_1", "onComplete Detail : uploadImage completed");
-                    }
-
+                .subscribe(new SingleObserver<JSONObject>() {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof ANError) {
@@ -567,7 +534,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(JSONObject response) {
+                    public void onSuccess(JSONObject response) {
                         Log.d(TAG + "_1", "Image upload Completed");
                         Log.d(TAG + "_1", "onResponse object : " + response.toString());
                     }
@@ -575,12 +542,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
 
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG + "_2", "onComplete Detail : uploadImage completed");
-                    }
-
+                .subscribe(new SingleObserver<JSONObject>() {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof ANError) {
@@ -608,7 +570,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(JSONObject response) {
+                    public void onSuccess(JSONObject response) {
                         Log.d(TAG + "_2", "Image upload Completed");
                         Log.d(TAG + "_2", "onResponse object : " + response.toString());
                     }
@@ -640,13 +602,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                 .getBitmapObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Bitmap>() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete Bitmap");
-
-
-                    }
+                .subscribe(new SingleObserver<Bitmap>() {
 
                     @Override
                     public void onError(Throwable e) {
@@ -675,7 +631,7 @@ public class Rx2ApiTestActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Bitmap bitmap) {
+                    public void onSuccess(Bitmap bitmap) {
                         Log.d(TAG, "onResponse Bitmap");
                         ImageView imageView = (ImageView) findViewById(R.id.imageView);
                         imageView.setImageBitmap(bitmap);

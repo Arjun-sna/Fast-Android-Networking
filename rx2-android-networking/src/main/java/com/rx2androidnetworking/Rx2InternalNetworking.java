@@ -31,6 +31,8 @@ import com.androidnetworking.internal.ResponseProgressBody;
 import com.androidnetworking.utils.SourceCloseUtil;
 import com.androidnetworking.utils.Utils;
 
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import java.io.File;
 import java.io.IOException;
 
@@ -60,7 +62,7 @@ import static com.androidnetworking.common.Method.PUT;
 @SuppressWarnings("unchecked")
 public class Rx2InternalNetworking {
 
-    public static <T> Observable<T> generateSimpleObservable(Rx2ANRequest request) {
+    public static <T> Single<T> generateSimpleObservable(Rx2ANRequest request) {
         Request okHttpRequest;
         Request.Builder builder = new Request.Builder().url(request.getUrl());
         InternalNetworking.addHeadersToRequestBuilder(builder, request);
@@ -156,11 +158,11 @@ public class Rx2InternalNetworking {
         return new DownloadANObservable<>(request);
     }
 
-    public static <T> Observable<T> generateMultipartObservable(final Rx2ANRequest request) {
+    public static <T> Single<T> generateMultipartObservable(final Rx2ANRequest request) {
         return new MultipartANObservable<>(request);
     }
 
-    static final class SimpleANObservable<T> extends Observable<T> {
+    static final class SimpleANObservable<T> extends Single<T> {
 
         private Rx2ANRequest request;
         private final Call originalCall;
@@ -171,7 +173,7 @@ public class Rx2InternalNetworking {
         }
 
         @Override
-        protected void subscribeActual(Observer<? super T> observer) {
+        protected void subscribeActual(SingleObserver<? super T> observer) {
             Call call = originalCall.clone();
             observer.onSubscribe(new ANDisposable(call));
             boolean doNotSwallowError = false;
@@ -217,12 +219,12 @@ public class Rx2InternalNetworking {
                         }
                     } else {
                         if (!call.isCanceled()) {
-                            observer.onNext(response.getResult());
+                            observer.onSuccess(response.getResult());
                         }
-                        if (!call.isCanceled()) {
-                            doNotSwallowError = true;
-                            observer.onComplete();
-                        }
+                        //if (!call.isCanceled()) {
+                        //    doNotSwallowError = true;
+                        //    observer.onComplete();
+                        //}
                     }
                 }
             } catch (IOException ioe) {
@@ -327,7 +329,7 @@ public class Rx2InternalNetworking {
         }
     }
 
-    static final class MultipartANObservable<T> extends Observable<T> {
+    static final class MultipartANObservable<T> extends Single<T> {
 
         private final Rx2ANRequest request;
 
@@ -336,7 +338,7 @@ public class Rx2InternalNetworking {
         }
 
         @Override
-        protected void subscribeActual(Observer<? super T> observer) {
+        protected void subscribeActual(SingleObserver<? super T> observer) {
             boolean doNotSwallowError = false;
             Response okHttpResponse = null;
             Request okHttpRequest;
@@ -390,12 +392,12 @@ public class Rx2InternalNetworking {
                         }
                     } else {
                         if (!request.getCall().isCanceled()) {
-                            observer.onNext(response.getResult());
+                            observer.onSuccess(response.getResult());
                         }
-                        if (!request.getCall().isCanceled()) {
-                            doNotSwallowError = true;
-                            observer.onComplete();
-                        }
+                        //if (!request.getCall().isCanceled()) {
+                        //    doNotSwallowError = true;
+                        //    observer.onComplete();
+                        //}
                     }
                 }
             } catch (IOException ioe) {

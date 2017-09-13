@@ -21,23 +21,19 @@ package com.rx2androidnetworking;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
-
 import com.androidnetworking.common.ANConstants;
 import com.androidnetworking.error.ANError;
 import com.rx2androidnetworking.model.User;
-
-import org.junit.Rule;
-
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
-
-import io.reactivex.Observer;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.Rule;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -68,7 +64,7 @@ public class Rx2MultipartObjectApiTest extends ApplicationTestCase<Application> 
         final AtomicReference<String> lastNameRef = new AtomicReference<>();
         final AtomicReference<Boolean> isSubscribedRef = new AtomicReference<>();
         final AtomicReference<Boolean> isCompletedRef = new AtomicReference<>();
-        final CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         Rx2AndroidNetworking.upload(server.url("/").toString())
                 .addMultipartParameter("key", "value")
@@ -76,28 +72,23 @@ public class Rx2MultipartObjectApiTest extends ApplicationTestCase<Application> 
                 .getObjectObservable(User.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<User>() {
+                .subscribe(new SingleObserver<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(User user) {
+                    public void onSuccess(User user) {
                         firstNameRef.set(user.firstName);
                         lastNameRef.set(user.lastName);
+                        isCompletedRef.set(true);
                         latch.countDown();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         assertTrue(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        isCompletedRef.set(true);
-                        latch.countDown();
                     }
                 });
 
@@ -127,14 +118,14 @@ public class Rx2MultipartObjectApiTest extends ApplicationTestCase<Application> 
                 .getObjectObservable(User.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<User>() {
+                .subscribe(new SingleObserver<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(User user) {
+                    public void onSuccess(User user) {
                         assertTrue(false);
                     }
 
@@ -145,11 +136,6 @@ public class Rx2MultipartObjectApiTest extends ApplicationTestCase<Application> 
                         errorDetailRef.set(anError.getErrorDetail());
                         errorCodeRef.set(anError.getErrorCode());
                         latch.countDown();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        assertTrue(false);
                     }
                 });
 
@@ -173,7 +159,7 @@ public class Rx2MultipartObjectApiTest extends ApplicationTestCase<Application> 
         final AtomicReference<String> lastNameRef = new AtomicReference<>();
         final AtomicReference<Boolean> isSubscribedRef = new AtomicReference<>();
         final AtomicReference<Boolean> isCompletedRef = new AtomicReference<>();
-        final CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         Rx2AndroidNetworking.upload(server.url("/").toString())
                 .addMultipartParameter("key", "value")
@@ -181,28 +167,23 @@ public class Rx2MultipartObjectApiTest extends ApplicationTestCase<Application> 
                 .getObjectListObservable(User.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<User>>() {
+                .subscribe(new SingleObserver<List<User>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(List<User> userList) {
+                    public void onSuccess(List<User> userList) {
                         firstNameRef.set(userList.get(0).firstName);
                         lastNameRef.set(userList.get(0).lastName);
+                        isCompletedRef.set(true);
                         latch.countDown();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         assertTrue(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        isCompletedRef.set(true);
-                        latch.countDown();
                     }
                 });
 
@@ -232,14 +213,14 @@ public class Rx2MultipartObjectApiTest extends ApplicationTestCase<Application> 
                 .getObjectListObservable(User.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<User>>() {
+                .subscribe(new SingleObserver<List<User>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(List<User> userList) {
+                    public void onSuccess(List<User> userList) {
                         assertTrue(false);
                     }
 
@@ -250,11 +231,6 @@ public class Rx2MultipartObjectApiTest extends ApplicationTestCase<Application> 
                         errorDetailRef.set(anError.getErrorDetail());
                         errorCodeRef.set(anError.getErrorCode());
                         latch.countDown();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        assertTrue(false);
                     }
                 });
 

@@ -25,6 +25,7 @@ import android.test.ApplicationTestCase;
 import com.androidnetworking.common.ANConstants;
 import com.androidnetworking.error.ANError;
 
+import io.reactivex.SingleObserver;
 import org.junit.Rule;
 
 import java.util.concurrent.CountDownLatch;
@@ -65,22 +66,23 @@ public class Rx2GetStringApiTest extends ApplicationTestCase<Application> {
         final AtomicReference<String> responseRef = new AtomicReference<>();
         final AtomicReference<Boolean> isSubscribedRef = new AtomicReference<>();
         final AtomicReference<Boolean> isCompletedRef = new AtomicReference<>();
-        final CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         Rx2AndroidNetworking.get(server.url("/").toString())
                 .build()
                 .getStringObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
+                .subscribe(new SingleObserver<String>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(String response) {
+                    public void onSuccess(String response) {
                         responseRef.set(response);
+                        isCompletedRef.set(true);
                         latch.countDown();
                     }
 
@@ -89,11 +91,6 @@ public class Rx2GetStringApiTest extends ApplicationTestCase<Application> {
                         assertTrue(false);
                     }
 
-                    @Override
-                    public void onComplete() {
-                        isCompletedRef.set(true);
-                        latch.countDown();
-                    }
                 });
 
         assertTrue(latch.await(2, SECONDS));
@@ -119,14 +116,14 @@ public class Rx2GetStringApiTest extends ApplicationTestCase<Application> {
                 .getStringObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
+                .subscribe(new SingleObserver<String>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(String response) {
+                    public void onSuccess(String response) {
                         assertTrue(false);
                     }
 
@@ -137,11 +134,6 @@ public class Rx2GetStringApiTest extends ApplicationTestCase<Application> {
                         errorDetailRef.set(anError.getErrorDetail());
                         errorCodeRef.set(anError.getErrorCode());
                         latch.countDown();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        assertTrue(false);
                     }
                 });
 

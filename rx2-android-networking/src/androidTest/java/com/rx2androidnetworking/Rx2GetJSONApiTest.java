@@ -25,6 +25,7 @@ import android.test.ApplicationTestCase;
 import com.androidnetworking.common.ANConstants;
 import com.androidnetworking.error.ANError;
 
+import io.reactivex.SingleObserver;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,24 +70,25 @@ public class Rx2GetJSONApiTest extends ApplicationTestCase<Application> {
         final AtomicReference<String> lastNameRef = new AtomicReference<>();
         final AtomicReference<Boolean> isSubscribedRef = new AtomicReference<>();
         final AtomicReference<Boolean> isCompletedRef = new AtomicReference<>();
-        final CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         Rx2AndroidNetworking.get(server.url("/").toString())
                 .build()
                 .getJSONObjectObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
+                .subscribe(new SingleObserver<JSONObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(JSONObject response) {
+                    public void onSuccess(JSONObject response) {
                         try {
                             firstNameRef.set(response.getString("firstName"));
                             lastNameRef.set(response.getString("lastName"));
+                            isCompletedRef.set(true);
                             latch.countDown();
                         } catch (JSONException e) {
                             assertTrue(false);
@@ -96,12 +98,6 @@ public class Rx2GetJSONApiTest extends ApplicationTestCase<Application> {
                     @Override
                     public void onError(Throwable e) {
                         assertTrue(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        isCompletedRef.set(true);
-                        latch.countDown();
                     }
                 });
 
@@ -129,14 +125,14 @@ public class Rx2GetJSONApiTest extends ApplicationTestCase<Application> {
                 .getJSONObjectObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
+                .subscribe(new SingleObserver<JSONObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(JSONObject response) {
+                    public void onSuccess(JSONObject response) {
                         assertTrue(false);
                     }
 
@@ -147,11 +143,6 @@ public class Rx2GetJSONApiTest extends ApplicationTestCase<Application> {
                         errorDetailRef.set(anError.getErrorDetail());
                         errorCodeRef.set(anError.getErrorCode());
                         latch.countDown();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        assertTrue(false);
                     }
                 });
 
@@ -175,26 +166,28 @@ public class Rx2GetJSONApiTest extends ApplicationTestCase<Application> {
         final AtomicReference<String> lastNameRef = new AtomicReference<>();
         final AtomicReference<Boolean> isSubscribedRef = new AtomicReference<>();
         final AtomicReference<Boolean> isCompletedRef = new AtomicReference<>();
-        final CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         Rx2AndroidNetworking.get(server.url("/").toString())
                 .build()
                 .getJSONArrayObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONArray>() {
+                .subscribe(new SingleObserver<JSONArray>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(JSONArray response) {
+                    public void onSuccess(JSONArray response) {
                         try {
                             JSONObject jsonObject = response.getJSONObject(0);
                             firstNameRef.set(jsonObject.getString("firstName"));
                             lastNameRef.set(jsonObject.getString("lastName"));
+                            isCompletedRef.set(true);
                             latch.countDown();
+
                         } catch (JSONException e) {
                             assertTrue(false);
                         }
@@ -203,12 +196,6 @@ public class Rx2GetJSONApiTest extends ApplicationTestCase<Application> {
                     @Override
                     public void onError(Throwable e) {
                         assertTrue(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        isCompletedRef.set(true);
-                        latch.countDown();
                     }
                 });
 
@@ -236,14 +223,14 @@ public class Rx2GetJSONApiTest extends ApplicationTestCase<Application> {
                 .getJSONArrayObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONArray>() {
+                .subscribe(new SingleObserver<JSONArray>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         isSubscribedRef.set(true);
                     }
 
                     @Override
-                    public void onNext(JSONArray response) {
+                    public void onSuccess(JSONArray response) {
                         assertTrue(false);
                     }
 
@@ -254,11 +241,6 @@ public class Rx2GetJSONApiTest extends ApplicationTestCase<Application> {
                         errorDetailRef.set(anError.getErrorDetail());
                         errorCodeRef.set(anError.getErrorCode());
                         latch.countDown();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        assertTrue(false);
                     }
                 });
 
